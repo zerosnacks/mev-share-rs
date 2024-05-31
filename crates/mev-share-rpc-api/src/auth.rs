@@ -7,8 +7,10 @@ use std::{
     task::{Context, Poll},
 };
 
-use ethers_core::{types::H256, utils::keccak256};
-use ethers_signers::Signer;
+use alloy::{
+    primitives::{utils::keccak256, B256},
+    signers::Signer,
+};
 use futures_util::future::BoxFuture;
 
 use http::{header::HeaderValue, HeaderName, Request};
@@ -98,7 +100,9 @@ where
 
             // sign request body and insert header
             let signature = signer
-                .sign_message(format!("0x{:x}", H256::from(keccak256(body_bytes.as_ref()))))
+                .sign_message(
+                    format!("0x{:x}", B256::from(keccak256(body_bytes.as_ref()))).as_bytes(),
+                )
                 .await?;
 
             let header_val =
@@ -115,8 +119,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ethers_core::rand::thread_rng;
-    use ethers_signers::LocalWallet;
+    use alloy::signers::wallet::LocalWallet;
     use http::Response;
     use hyper::Body;
     use std::convert::Infallible;
@@ -124,7 +127,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_signature() {
-        let fb_signer = LocalWallet::new(&mut thread_rng());
+        let fb_signer = LocalWallet::random();
 
         // mock service that returns the request headers
         let svc = FlashbotsSigner {
@@ -159,7 +162,7 @@ mod tests {
 
         let signer_address = format!("{:?}", fb_signer.address());
         let expected_signature = fb_signer
-            .sign_message(format!("0x{:x}", H256::from(keccak256(bytes.clone()))))
+            .sign_message(format!("0x{:x}", B256::from(keccak256(bytes.clone()))))
             .await
             .unwrap()
             .to_string();
@@ -171,7 +174,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_skips_non_json() {
-        let fb_signer = LocalWallet::new(&mut thread_rng());
+        let fb_signer = LocalWallet::random();
 
         // mock service that returns the request headers
         let svc = FlashbotsSigner {
@@ -205,7 +208,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_returns_error_when_not_post() {
-        let fb_signer = LocalWallet::new(&mut thread_rng());
+        let fb_signer = LocalWallet::random();
 
         // mock service that returns the request headers
         let svc = FlashbotsSigner {

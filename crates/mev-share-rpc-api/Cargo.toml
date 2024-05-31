@@ -13,6 +13,7 @@ MEV-share RPC API trait definitions
 
 [dependencies]
 ## eth
+alloy.workspace = true
 ethers-core.workspace = true
 ethers-signers.workspace = true
 

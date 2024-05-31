@@ -37,12 +37,12 @@ use jsonrpsee::http_client::{transport::Error as HttpError, HttpClientBuilder};
 use mev_share_rpc_api::{BundleItem, FlashbotsSignerLayer, MevApiClient, SendBundleRequest};
 use tower::ServiceBuilder;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
-
 use ethers_core::{
     rand::thread_rng,
     types::{TransactionRequest, H256},
 };
 use ethers_signers::{LocalWallet, Signer};
+
 
 #[tokio::main]
 async fn main() {

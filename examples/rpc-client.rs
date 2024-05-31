@@ -1,5 +1,15 @@
 //! Basic RPC api example
 
+// use ethers_core::{
+//     rand::thread_rng,
+//     types::{TransactionRequest, H256},
+// };
+
+use alloy::{
+    primitives::B256,
+    rpc::types::eth::TransactionRequest,
+    signers::{wallet::LocalWallet, Signer},
+};
 use jsonrpsee::http_client::{transport::Error as HttpError, HttpClientBuilder};
 use mev_share_rpc_api::{
     BundleItem, FlashbotsApiClient, FlashbotsSignerLayer, MevApiClient, SendBundleRequest,
@@ -7,21 +17,15 @@ use mev_share_rpc_api::{
 use tower::ServiceBuilder;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
-use ethers_core::{
-    rand::thread_rng,
-    types::{TransactionRequest, H256},
-};
-use ethers_signers::{LocalWallet, Signer};
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::registry().with(fmt::layer()).with(EnvFilter::from_default_env()).init();
 
     // The signer used to authenticate bundles
-    let fb_signer = LocalWallet::new(&mut thread_rng());
+    let fb_signer = LocalWallet::random();
 
     // The signer used to sign our transactions
-    let tx_signer = LocalWallet::new(&mut thread_rng());
+    let tx_signer = LocalWallet::random();
 
     // Set up flashbots-style auth middleware
     let signing_middleware = FlashbotsSignerLayer::new(fb_signer);
@@ -38,7 +42,7 @@ async fn main() {
         .expect("Failed to create http client");
 
     // Hash of the transaction we are trying to backrun
-    let tx_hash = H256::random();
+    let tx_hash = B256::random();
 
     // Our own tx that we want to include in the bundle
     let tx = TransactionRequest::pay("vitalik.eth", 100);

@@ -76,8 +76,10 @@ dependencies = [
  "alloy-genesis",
  "alloy-provider",
  "alloy-rpc-client",
+ "alloy-rpc-types",
  "alloy-serde",
  "alloy-signer",
+ "alloy-signer-wallet",
  "alloy-transport-http",
  "reqwest 0.12.4",
 ]
@@ -347,6 +349,21 @@ dependencies = [
  "auto_impl",
  "elliptic-curve",
  "k256",
+ "thiserror",
+]
+
+[[package]]
+name = "alloy-signer-wallet"
+version = "0.1.0"
+source = "git+https://github.com/alloy-rs/alloy?rev=0fc11ec#0fc11ec751ec6f7a100a576daff93f12b64573f8"
+dependencies = [
+ "alloy-consensus",
+ "alloy-network",
+ "alloy-primitives",
+ "alloy-signer",
+ "async-trait",
+ "k256",
+ "rand 0.8.5",
  "thiserror",
 ]
 
@@ -2572,6 +2589,7 @@ dependencies = [
 name = "mev-share-rpc-api"
 version = "0.1.4"
 dependencies = [
+ "alloy",
  "async-trait",
  "ethers-core",
  "ethers-signers",
