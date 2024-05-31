@@ -1,6 +1,6 @@
 //! MEV-share event type bindings
 
-use alloy_primitives::{hex, Address, Bytes, TxHash, B256, U256};
+use alloy::primitives::{hex, Address, Bytes, TxHash, B256, U256};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::{array::TryFromSliceError, fmt::LowerHex, ops::Deref};
 

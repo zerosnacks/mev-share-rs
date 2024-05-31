@@ -19,7 +19,7 @@ jsonrpsee = { workspace = true, features = ["client", "async-client"] }
 tower.workspace = true
 
 ## eth
-alloy-primitives.workspace = true
+alloy.workspace = true
 ethers-core.workspace = true
 ethers-providers.workspace = true
 ethers-signers.workspace = true

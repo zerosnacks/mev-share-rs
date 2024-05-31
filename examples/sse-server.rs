@@ -1,5 +1,5 @@
 //! SSE server example
-use alloy_primitives::B256;
+use alloy::primitives::B256;
 use futures_util::StreamExt;
 use hyper::{service::make_service_fn, Server};
 use mev_share_sse::{Event, EventClient};

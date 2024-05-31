@@ -29,7 +29,10 @@ mev-share-sse = { path = "crates/mev-share-sse" }
 mev-share-rpc-api = { path = "crates/mev-share-rpc-api" }
 
 ## eth
-alloy-primitives = { version = "0.7.0", features = ["serde"] }
+alloy = { git = "https://github.com/alloy-rs/alloy", rev = "0fc11ec", features = [
+    "signers",
+    "providers",
+] }
 ethers-core = { version = "2.0", default-features = false }
 ethers-signers = "2.0"
 ethers-providers = "2.0"

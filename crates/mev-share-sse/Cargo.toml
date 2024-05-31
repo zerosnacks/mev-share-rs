@@ -11,7 +11,7 @@ MEV-share Server Side Events support in rust
 """
 
 [dependencies]
-alloy-primitives.workspace = true
+alloy.workspace = true
 
 ## async
 async-sse = "5.1"
