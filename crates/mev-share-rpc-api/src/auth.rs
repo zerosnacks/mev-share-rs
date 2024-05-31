@@ -8,7 +8,7 @@ use std::{
 };
 
 use alloy::{
-    primitives::{utils::keccak256, B256},
+    primitives::{hex, utils::keccak256, B256},
     signers::Signer,
 };
 use futures_util::future::BoxFuture;
@@ -16,6 +16,7 @@ use futures_util::future::BoxFuture;
 use http::{header::HeaderValue, HeaderName, Request};
 use hyper::Body;
 
+use serde::Serialize;
 use tower::{Layer, Service};
 
 static FLASHBOTS_HEADER: HeaderName = HeaderName::from_static("x-flashbots-signature");
@@ -54,7 +55,7 @@ where
     I: Service<Request<Body>> + Clone + Send + 'static,
     I::Future: Send,
     I::Error: Into<Box<dyn Error + Send + Sync>> + 'static,
-    S: Signer + Clone + Send + 'static,
+    S: Signer + Clone + Send + 'static + std::marker::Sync,
 {
     type Response = I::Response;
     type Error = Box<dyn Error + Send + Sync>;
@@ -106,7 +107,7 @@ where
                 .await?;
 
             let header_val =
-                HeaderValue::from_str(&format!("{:?}:0x{}", signer.address(), signature))
+                HeaderValue::from_str(&format!("{:?}:0x{}", signer.address(), signature.inner()))
                     .expect("Header contains invalid characters");
             parts.headers.insert(FLASHBOTS_HEADER.clone(), header_val);
 
@@ -162,9 +163,10 @@ mod tests {
 
         let signer_address = format!("{:?}", fb_signer.address());
         let expected_signature = fb_signer
-            .sign_message(format!("0x{:x}", B256::from(keccak256(bytes.clone()))))
+            .sign_message(format!("0x{:x}", B256::from(keccak256(bytes.clone()))).as_bytes())
             .await
             .unwrap()
+            .inner()
             .to_string();
 
         // verify that the header contains expected address and signature

@@ -82,8 +82,7 @@ where
 mod tests {
     use super::*;
     use crate::FlashbotsSignerLayer;
-    use ethers_core::rand::thread_rng;
-    use ethers_signers::LocalWallet;
+    use alloy::signers::wallet::LocalWallet;
     use jsonrpsee::http_client::{transport, HttpClientBuilder};
 
     struct Client {
@@ -92,7 +91,7 @@ mod tests {
 
     #[allow(dead_code)]
     async fn assert_mev_api_box() {
-        let fb_signer = LocalWallet::new(&mut thread_rng());
+        let fb_signer = LocalWallet::random();
         let http = HttpClientBuilder::default()
             .set_middleware(
                 tower::ServiceBuilder::new()
